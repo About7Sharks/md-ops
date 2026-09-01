@@ -51,10 +51,8 @@ git -C "$destination" diff --cached --check
 (
   cd "$destination"
   ./scripts/audit-public-tree.sh
-  find . -type f \
-    ! -path './.git/*' \
-    ! -name 'PUBLIC_SOURCE_MANIFEST.sha256' \
-    -print0 \
+  git ls-files -z \
+    | grep -zvxF 'PUBLIC_SOURCE_MANIFEST.sha256' \
     | LC_ALL=C sort -z \
     | xargs -0 sha256sum > PUBLIC_SOURCE_MANIFEST.sha256
 )
