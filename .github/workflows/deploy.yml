@@ -67,16 +67,39 @@ jobs:
             --branch main \
             --commit-hash "$GITHUB_SHA" \
             --commit-message "MD Ops site $GITHUB_SHA"
-      - name: Verify the custom domain
+      - name: Verify exact Pages deployment and domain attachment
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          project_api="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/md-ops-site"
+          deployments_api="$project_api/deployments"
           for attempt in {1..12}; do
-            if body="$(curl -fsS --max-time 15 https://mdops.z4cllc.com/)" \
+            project_json="$(curl -fsS --max-time 15 \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              "$project_api")" || project_json=''
+            deployments_json="$(curl -fsS --max-time 15 \
+              -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+              "$deployments_api")" || deployments_json=''
+            deployment_url="$(jq -r --arg sha "$GITHUB_SHA" '
+              .result[]
+              | select(.environment == "production")
+              | select(.deployment_trigger.metadata.commit_hash == $sha)
+              | select(.latest_stage.status == "success")
+              | .url
+            ' <<<"$deployments_json" 2>/dev/null | head -n 1)" || deployment_url=''
+            if jq -e '
+                .success == true
+                and (.result.domains | index("mdops.z4cllc.com") != null)
+              ' <<<"$project_json" >/dev/null 2>&1 \
+              && [[ "$deployment_url" == https://*.md-ops-site.pages.dev ]] \
+              && body="$(curl -fsS --max-time 15 "$deployment_url")" \
               && grep -q 'MD Ops' <<<"$body"; then
-              printf 'Production smoke test passed.\n'
+              printf 'Pages deployment and domain attachment verification passed.\n'
               exit 0
             fi
-            printf 'Production smoke test attempt %s/12 failed; retrying.\n' "$attempt"
+            printf 'Pages verification attempt %s/12 failed; retrying.\n' "$attempt"
             sleep 10
           done
-          printf 'Production smoke test failed. Roll back to the prior successful Pages deployment.\n' >&2
+          printf 'Pages verification failed. Roll back to the prior successful deployment.\n' >&2
           exit 1

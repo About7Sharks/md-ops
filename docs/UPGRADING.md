@@ -62,4 +62,6 @@ Application rollback does not replace note-data recovery. Keep release rollback 
 
 ## Website updates
 
-The public site follows a different lane: pull request, required CI/security checks, reviewed merge, manual production approval, Cloudflare Pages deployment, external smoke test, and prior-deployment rollback. See [Public release process](PUBLIC_RELEASE.md).
+The public site follows a separate lane: pull request, required CI/security checks, reviewed merge, manual production approval, Cloudflare Pages deployment, and prior-deployment rollback. The production workflow verifies the exact commit through the authenticated Pages API, requires `mdops.z4cllc.com` to remain attached to the project, and fetches the deployment-specific `pages.dev` artifact.
+
+After the workflow succeeds, verify `https://mdops.z4cllc.com/` from an independent browser or network path. The custom domain can enforce edge policy that rejects GitHub-hosted runner IPs; do not weaken that policy merely to make the runner's public-domain curl pass. See [Public release process](PUBLIC_RELEASE.md).
