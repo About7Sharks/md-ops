@@ -120,7 +120,7 @@ e3aac1eb8afe18338c948cc8df1f18f57ecf91a77e5e9ce79f511c8cab4e425c  ./scripts/audi
 5cb762ffd1c4677517e3f9ad39d2279ef930def39b813041087b7e11a721670d  ./scripts/export-public-snapshot.sh
 a6709a5720bf84361506c643f7c12352f80f4ba6175f2d46a204916d11ba71a3  ./scripts/prepare-ui-bundle.sh
 17f1d0fdb68499ea811f67eda293a0aff9db180aa49b47db62ff022ea5d8a1b2  ./scripts/test-operations.sh
-3233875b06195c05a288413137ea25352949e8b5ca9af8b894df08d0b56f3538  ./scripts/verify-container.sh
+567e42c34278de87e5ac8956be43207f3cbb949ee2ecb734bc5d7e0c99e58340  ./scripts/verify-container.sh
 eb6f135a5c15c4d062eee110b03714bec4c14e99c505df374328cf5493fea753  ./scripts/verify-local-browser.sh
 2c7a64007f1d91910e75b04842bd11d55324d9f5a3bdfee800e74eed5ed0bf35  ./scripts/verify-ui-lockfile.sh
 0660baafa6db50f9d0d7c4994e8ba29ef444ed151834da98c169264b0db39fbb  ./scripts/with-bun.sh
