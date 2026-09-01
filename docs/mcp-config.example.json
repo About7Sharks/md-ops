@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "md-ops": {
+      "command": "npm",
+      "args": ["--prefix", "<md-ops-install>/packages/mcp", "run", "start"],
+      "env": {
+        "MD_OPS_API_URL": "<trusted-md-ops-service-url>",
+        "MD_OPS_MCP_WRITE_ENABLED": "false"
+      }
+    }
+  }
+}

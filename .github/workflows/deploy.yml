@@ -1,0 +1,82 @@
+name: deploy-site
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mdops-site-production
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: verify exact production commit
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            packages/ui/package-lock.json
+            site/package-lock.json
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.3.13
+      - name: Install locked dependencies
+        run: npm run setup:ci
+      - name: Verify packages and release tree
+        run: |
+          npm run verify
+          ./scripts/audit-public-tree.sh
+          git diff --check
+
+  deploy:
+    name: deploy static site after approval
+    needs: verify
+    runs-on: ubuntu-latest
+    environment:
+      name: mdops-site-production
+      url: https://mdops.z4cllc.com/
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - name: Build locked static artifact
+        run: |
+          npm --prefix site ci
+          npm --prefix site run build
+      - name: Deploy exact commit to Cloudflare Pages
+        working-directory: site
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          test -n "$CLOUDFLARE_API_TOKEN"
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+          npx wrangler pages deploy dist \
+            --project-name md-ops-site \
+            --branch main \
+            --commit-hash "$GITHUB_SHA" \
+            --commit-message "MD Ops site $GITHUB_SHA"
+      - name: Verify the custom domain
+        run: |
+          for attempt in {1..12}; do
+            if body="$(curl -fsS --max-time 15 https://mdops.z4cllc.com/)" \
+              && grep -q 'MD Ops' <<<"$body"; then
+              printf 'Production smoke test passed.\n'
+              exit 0
+            fi
+            printf 'Production smoke test attempt %s/12 failed; retrying.\n' "$attempt"
+            sleep 10
+          done
+          printf 'Production smoke test failed. Roll back to the prior successful Pages deployment.\n' >&2
+          exit 1

@@ -1,0 +1,194 @@
+/* ============================================================
+   Theme system — one token vocabulary, five presets.
+   Active preset is chosen with <html data-theme="…">; the UI
+   reads only var(--token) values, never raw colors.
+   ============================================================ */
+
+:root {
+  --font-ui: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-read: 'Newsreader', Georgia, 'Times New Roman', serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --radius: 8px;
+}
+
+/* ---------- Default: Slate & Rose (mock 09) ---------- */
+:root,
+html[data-theme='slate-rose'] {
+  color-scheme: dark;
+  --bg: #14151a;
+  --bg-deep: #101116;
+  --surface: #1b1d24;
+  --surface-raised: #22242c;
+  --surface-hover: #262932;
+  --border: #2c2f38;
+  --line: rgba(228, 228, 231, 0.10);
+  --line-strong: rgba(228, 228, 231, 0.20);
+  --text: #e4e4e7;
+  --text-strong: #fafafa;
+  --muted: #7c7f8a;
+  --muted-strong: #a3a6b1;
+  --accent: #d187a0;
+  --accent-strong: #e29ab1;
+  --accent-soft: rgba(209, 135, 160, 0.14);
+  --accent-border: rgba(209, 135, 160, 0.45);
+  --accent-contrast: #1a1216;
+  --focus: #6ea8fe;
+  --focus-ring: rgba(110, 168, 254, 0.45);
+  --green: #6cc47a;
+  --green-soft: rgba(108, 196, 122, 0.14);
+  --amber: #d9a453;
+  --amber-soft: rgba(217, 164, 83, 0.14);
+  --red: #e06c75;
+  --red-soft: rgba(224, 108, 117, 0.14);
+  --blue: #6ea8fe;
+  --blue-soft: rgba(110, 168, 254, 0.14);
+  --sel-bg: rgba(209, 135, 160, 0.25);
+  --scroll-thumb: #343741;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------- GitHub Quiet (mock 06) ---------- */
+html[data-theme='github-quiet'] {
+  color-scheme: dark;
+  --bg: #0d1117;
+  --bg-deep: #010409;
+  --surface: #161b22;
+  --surface-raised: #1c2129;
+  --surface-hover: #21262d;
+  --border: #30363d;
+  --line: rgba(230, 237, 243, 0.10);
+  --line-strong: rgba(230, 237, 243, 0.22);
+  --text: #e6edf3;
+  --text-strong: #f0f6fc;
+  --muted: #8b949e;
+  --muted-strong: #b1bac4;
+  --accent: #2ea88a;
+  --accent-strong: #3fc7a4;
+  --accent-soft: rgba(46, 168, 138, 0.16);
+  --accent-border: rgba(46, 168, 138, 0.5);
+  --accent-contrast: #04150f;
+  --focus: #2ea88a;
+  --focus-ring: rgba(46, 168, 138, 0.5);
+  --green: #3fb950;
+  --green-soft: rgba(63, 185, 80, 0.15);
+  --amber: #d29922;
+  --amber-soft: rgba(210, 153, 34, 0.15);
+  --red: #f85149;
+  --red-soft: rgba(248, 81, 73, 0.15);
+  --blue: #58a6ff;
+  --blue-soft: rgba(88, 166, 255, 0.15);
+  --sel-bg: rgba(46, 168, 138, 0.28);
+  --scroll-thumb: #30363d;
+  --shadow: 0 8px 24px rgba(1, 4, 9, 0.6);
+}
+
+/* ---------- Deep Sea (mock 08) ---------- */
+html[data-theme='deep-sea'] {
+  color-scheme: dark;
+  --bg: #0b0f14;
+  --bg-deep: #06090d;
+  --surface: #11161d;
+  --surface-raised: #161c25;
+  --surface-hover: #1a212b;
+  --border: #1f2833;
+  --line: rgba(220, 230, 239, 0.09);
+  --line-strong: rgba(220, 230, 239, 0.2);
+  --text: #dce6ef;
+  --text-strong: #eef5fb;
+  --muted: #6f7d8c;
+  --muted-strong: #9aa8b6;
+  --accent: #45c7a8;
+  --accent-strong: #62dcc0;
+  --accent-soft: rgba(69, 199, 168, 0.14);
+  --accent-border: rgba(69, 199, 168, 0.45);
+  --accent-contrast: #04120d;
+  --focus: #8f7ff2;
+  --focus-ring: rgba(143, 127, 242, 0.5);
+  --green: #57c98b;
+  --green-soft: rgba(87, 201, 139, 0.14);
+  --amber: #d9b45b;
+  --amber-soft: rgba(217, 180, 91, 0.14);
+  --red: #e26d6d;
+  --red-soft: rgba(226, 109, 109, 0.14);
+  --blue: #64a9f0;
+  --blue-soft: rgba(100, 169, 240, 0.14);
+  --sel-bg: rgba(69, 199, 168, 0.26);
+  --scroll-thumb: #1f2833;
+  --shadow: 0 10px 28px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- Warm Ink (mock 07) ---------- */
+html[data-theme='warm-ink'] {
+  color-scheme: dark;
+  --font-ui: 'IBM Plex Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-read: 'Fraunces', Georgia, serif;
+  --bg: #191614;
+  --bg-deep: #12100e;
+  --surface: #211d1a;
+  --surface-raised: #282320;
+  --surface-hover: #2e2823;
+  --border: #3a332d;
+  --line: rgba(232, 226, 214, 0.10);
+  --line-strong: rgba(232, 226, 214, 0.22);
+  --text: #e8e2d6;
+  --text-strong: #f4efe6;
+  --muted: #9a917f;
+  --muted-strong: #bcb3a1;
+  --accent: #d98e4a;
+  --accent-strong: #eaa462;
+  --accent-soft: rgba(217, 142, 74, 0.15);
+  --accent-border: rgba(217, 142, 74, 0.5);
+  --accent-contrast: #1c1108;
+  --focus: #d98e4a;
+  --focus-ring: rgba(217, 142, 74, 0.5);
+  --green: #86b56f;
+  --green-soft: rgba(134, 181, 111, 0.15);
+  --amber: #d9a453;
+  --amber-soft: rgba(217, 164, 83, 0.15);
+  --red: #c76a5a;
+  --red-soft: rgba(199, 106, 90, 0.15);
+  --blue: #7fa8c9;
+  --blue-soft: rgba(127, 168, 201, 0.15);
+  --sel-bg: rgba(217, 142, 74, 0.28);
+  --scroll-thumb: #3a332d;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* ---------- Paper Night (mock 10) ---------- */
+html[data-theme='paper-night'] {
+  color-scheme: dark;
+  --font-ui: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-read: 'Charter', 'Bitstream Charter', 'Iowan Old Style', Georgia, serif;
+  --bg: #101010;
+  --bg-deep: #0a0a0a;
+  --surface: #171717;
+  --surface-raised: #1d1d1d;
+  --surface-hover: #232323;
+  --border: #2a2a2a;
+  --line: rgba(237, 237, 237, 0.09);
+  --line-strong: rgba(237, 237, 237, 0.18);
+  --text: #ededed;
+  --text-strong: #fafafa;
+  --muted: #737373;
+  --muted-strong: #a1a1a1;
+  --accent: #c9a227;
+  --accent-strong: #e0bb42;
+  --accent-soft: rgba(201, 162, 39, 0.13);
+  --accent-border: rgba(201, 162, 39, 0.45);
+  --accent-contrast: #14100a;
+  --focus: #c9a227;
+  --focus-ring: rgba(201, 162, 39, 0.5);
+  --green: #8fbf7f;
+  --green-soft: rgba(143, 191, 127, 0.12);
+  --amber: #c9a227;
+  --amber-soft: rgba(201, 162, 39, 0.13);
+  --red: #d76d6d;
+  --red-soft: rgba(215, 109, 109, 0.13);
+  --blue: #9db4d0;
+  --blue-soft: rgba(157, 180, 208, 0.13);
+  --sel-bg: rgba(201, 162, 39, 0.26);
+  --scroll-thumb: #2a2a2a;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+::selection { background: var(--sel-bg); }

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MD Ops</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&family=JetBrains+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // Apply saved theme before first paint so the boot background matches
+      // the chosen palette (no white flash, no theme flash).
+      try {
+        var s = JSON.parse(localStorage.getItem('mdops.uiSettings.v1') || '{}');
+        var themes = { 'slate-rose': 1, 'github-quiet': 1, 'deep-sea': 1, 'warm-ink': 1, 'paper-night': 1 };
+        var urlTheme = new URLSearchParams(location.search).get('theme');
+        if (urlTheme && themes[urlTheme]) s.theme = urlTheme;
+        document.documentElement.dataset.theme = themes[s.theme] ? s.theme : 'slate-rose';
+        var widths = { comfort: '72ch', wide: '960px', full: '100%' };
+        var sizes = { compact: '15px', default: '16.5px', large: '18.5px' };
+        document.documentElement.style.setProperty('--read-max-width', widths[s.readingWidth] || widths.default);
+        document.documentElement.style.setProperty('--read-font-size', sizes[s.readingSize] || sizes.default);
+      } catch (e) { /* settings unavailable; CSS defaults apply */ }
+    </script>
+    <style>
+      /* Paint the app's dark background before the bundle mounts so the
+         first paint is never a white flash (no layout shift). */
+      html.app-boot,
+      html.app-boot body { background: #14151a; }
+      html.app-boot[data-theme='github-quiet'], html.app-boot[data-theme='github-quiet'] body { background: #0d1117; }
+      html.app-boot[data-theme='deep-sea'], html.app-boot[data-theme='deep-sea'] body { background: #0b0f14; }
+      html.app-boot[data-theme='warm-ink'], html.app-boot[data-theme='warm-ink'] body { background: #191614; }
+      html.app-boot[data-theme='paper-night'], html.app-boot[data-theme='paper-night'] body { background: #101010; }
+    </style>
+  </head>
+  <body class="app-boot">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

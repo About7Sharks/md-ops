@@ -1,0 +1,70 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    name: test, build, browser smoke, and dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24.11.1
+          cache: npm
+          cache-dependency-path: |
+            package-lock.json
+            packages/ui/package-lock.json
+            site/package-lock.json
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
+        with:
+          bun-version: 1.3.13
+      - name: Install locked dependencies
+        run: npm run setup:ci
+      - name: Verify packages and operations
+        run: npm run verify
+      - name: Verify the local browser surface
+        run: npm run verify:browser:local
+      - name: Verify the desktop graph surface
+        env:
+          MD_OPS_BROWSER_ARTIFACT_DIR: artifacts/graph-browser
+        run: npm run verify:browser:local -- --desktop --open-graph
+      - name: Upload browser evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: browser-verification
+          path: artifacts
+          if-no-files-found: warn
+      - name: Audit JavaScript dependency locks
+        run: |
+          npm audit
+          npm --prefix packages/ui audit
+          npm --prefix site audit
+          bun audit --cwd packages/api
+
+  container:
+    name: build and scan the container
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Build from refreshed base layers
+        run: docker compose build --pull
+      - name: Verify read-only and explicitly writable container modes
+        run: bash scripts/verify-container.sh --skip-build
+      - name: Scan fixed high and critical vulnerabilities
+        run: |
+          docker save md-ops:0.1.0 -o /tmp/md-ops.tar
+          docker run --rm \
+            -v /tmp/md-ops.tar:/scan/md-ops.tar:ro \
+            aquasec/trivy:0.67.2@sha256:e2b22eac59c02003d8749f5b8d9bd073b62e30fefaef5b7c8371204e0a4b0c08 \
+            image --input /scan/md-ops.tar --scanners vuln \
+            --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 \
+            --skip-version-check --format table

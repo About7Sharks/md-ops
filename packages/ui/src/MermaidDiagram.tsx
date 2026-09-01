@@ -1,0 +1,93 @@
+import { useEffect, useRef, useState } from 'react'
+import mermaid from 'mermaid'
+import { MERMAID_SECURITY_LEVEL } from './mermaidDiagrams'
+
+type MermaidDiagramProps = {
+  source: string
+  title?: string
+}
+
+// Initialize mermaid exactly once. The module may be re-evaluated under HMR;
+// re-initializing would reset theme / startOnLoad state mid-session.
+if (typeof window !== 'undefined' && !(window as any).__mdMermaidInit) {
+  (window as any).__mdMermaidInit = true
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: MERMAID_SECURITY_LEVEL,
+    theme: 'default',
+  })
+}
+
+let renderCounter = 0
+
+/** Render mermaid lazily: only when the block scrolls into view, so a
+ *  5-diagram note doesn't fire 5 concurrent renders on mount. Cleanup uses
+ *  a generation counter to drop stale writes on unmount. */
+export function MermaidDiagram({ source, title }: MermaidDiagramProps) {
+  const containerRef = useRef<HTMLDivElement | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [rendered, setRendered] = useState(false)
+
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    let cancelled = false
+    let generation = 0
+    const id = `md-mermaid-${renderCounter++}`
+
+    const render = async (gen: number) => {
+      const node = containerRef.current
+      if (!node) return
+      try {
+        const { svg } = await mermaid.render(id, source)
+        if (cancelled || generation !== gen) return
+        node.innerHTML = svg
+        setError(null)
+        setRendered(true)
+      } catch (err) {
+        if (cancelled || generation !== gen) return
+        setError(err instanceof Error ? err.message : String(err))
+        setRendered(false)
+      }
+    }
+
+    // Lazy render: only kick off when the block scrolls into view. Without
+    // IntersectionObserver we render immediately (fallback for SSR / old
+    // browsers).
+    let io: IntersectionObserver | null = null
+    if (typeof IntersectionObserver !== 'undefined') {
+      io = new IntersectionObserver((entries) => {
+        if (cancelled) return
+        for (const e of entries) {
+          if (e.isIntersecting) {
+            io?.disconnect()
+            void render(generation)
+          }
+        }
+      }, { rootMargin: '200px' })
+      io.observe(container)
+    } else {
+      void render(generation)
+    }
+
+    return () => {
+      cancelled = true
+      generation += 1
+      io?.disconnect()
+    }
+  }, [source])
+
+  return (
+    <div className="mermaid-diagram">
+      {title ? <h4 className="mermaid-diagram-title">{title}</h4> : null}
+      <div ref={containerRef} className="mermaid-diagram-canvas" data-role="mermaid-diagram" />
+      {error ? (
+        <div className="mermaid-diagram-error" role="alert">
+          <strong>Mermaid render failed</strong>
+          <pre>{error}</pre>
+        </div>
+      ) : null}
+      {!error && !rendered ? <div className="mermaid-diagram-loading">Rendering diagram…</div> : null}
+    </div>
+  )
+}

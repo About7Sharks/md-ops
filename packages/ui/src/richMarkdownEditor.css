@@ -1,0 +1,129 @@
+.rich-markdown-editor {
+  container-type: inline-size;
+  display: flex;
+  min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border, var(--border));
+  border-radius: 10px;
+  background: var(--surface, var(--surface));
+  color: var(--text, var(--text));
+}
+
+.rich-markdown-editor__topline,
+.rich-markdown-editor__format-row,
+.rich-markdown-editor__status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border, var(--border));
+}
+
+.rich-markdown-editor__label { font-size: .86rem; font-weight: 650; }
+.rich-markdown-editor__actions { display: flex; gap: 8px; margin-left: auto; }
+.rich-markdown-editor__action,
+.rich-markdown-editor__format {
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--border, var(--border));
+  border-radius: 6px;
+  background: var(--surface-hover);
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+  font-size: .82rem;
+}
+.rich-markdown-editor__save { border-color: var(--accent, var(--accent)); }
+.rich-markdown-editor__format-row { padding-block: 6px; }
+.rich-markdown-editor__toolbar {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.rich-markdown-editor__format { white-space: nowrap; }
+.rich-markdown-editor__more-toggle { margin-left: auto; }
+.rich-markdown-editor__more-chevron {
+  display: inline-block;
+  margin-left: 3px;
+  transition: transform 140ms ease;
+}
+.rich-markdown-editor__more-toggle[aria-expanded='true'] .rich-markdown-editor__more-chevron { transform: rotate(180deg); }
+.rich-markdown-editor__more-controls {
+  display: grid;
+  flex: 1 0 100%;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+  padding-top: 6px;
+  border-top: 1px solid color-mix(in srgb, var(--border, var(--border)) 72%, transparent);
+}
+.rich-markdown-editor__more-controls .rich-markdown-editor__format { width: 100%; }
+.rich-markdown-editor__action:hover:not(:disabled),
+.rich-markdown-editor__format:hover:not(:disabled) { background: var(--border); }
+.rich-markdown-editor__action:focus-visible,
+.rich-markdown-editor__format:focus-visible,
+.rich-markdown-editor__input:focus-visible { outline: 3px solid var(--accent, var(--accent)); outline-offset: 2px; }
+.rich-markdown-editor__action:disabled,
+.rich-markdown-editor__format:disabled { cursor: not-allowed; opacity: .52; }
+.rich-markdown-editor__input {
+  width: 100%;
+  min-height: 12rem;
+  flex: 1;
+  resize: vertical;
+  padding: 16px;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 1rem;
+  line-height: 1.65;
+  tab-size: 2;
+  overflow-wrap: anywhere;
+}
+.rich-markdown-editor__input:focus { outline: none; }
+.rich-markdown-editor__input:focus-visible { outline-offset: -4px; }
+.rich-markdown-editor__status {
+  margin-top: auto;
+  overflow: hidden;
+  border-bottom: 0;
+  border-top: 1px solid var(--border, var(--border));
+  color: var(--muted);
+  font-size: .78rem;
+  flex-wrap: nowrap;
+  gap: 0;
+  white-space: nowrap;
+}
+.rich-markdown-editor__status > span { flex: 0 0 auto; }
+.rich-markdown-editor__status > .rich-markdown-editor__status-state {
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.rich-markdown-editor__status > span + span::before { content: '•'; margin-inline: 6px; color: var(--border); }
+.rich-markdown-editor__dirty { color: var(--amber); }
+
+@container (max-width: 420px) {
+  .rich-markdown-editor__more-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 900px) {
+  .rich-markdown-editor__topline {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 4px 8px;
+    background: var(--surface, var(--surface));
+  }
+  .rich-markdown-editor__action { min-height: 44px; }
+  .rich-markdown-editor__format-row { padding: 6px 8px; }
+  .rich-markdown-editor__format { min-height: 44px; }
+  .rich-markdown-editor__more-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .rich-markdown-editor__input { min-height: 16rem; padding: 14px; }
+  .rich-markdown-editor__status { padding: 6px 8px; font-size: .72rem; }
+}

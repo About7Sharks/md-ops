@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+!/.env.example
+node_modules
+**/node_modules
+**/dist
+site
+artifacts
+playwright-report
+test-results

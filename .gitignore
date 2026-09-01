@@ -1,0 +1,25 @@
+# Dependencies and builds
+node_modules/
+packages/*/node_modules/
+packages/*/dist/
+site/node_modules/
+site/dist/
+packages/*/coverage/
+*.tsbuildinfo
+
+# Local configuration and secrets
+.env
+.env.*
+!.env.example
+!.env.template
+
+# Local test artifacts
+artifacts/
+playwright-report/
+test-results/
+*.log
+
+# Editor and OS files
+.DS_Store
+.idea/
+.vscode/

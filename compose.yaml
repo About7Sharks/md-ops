@@ -1,0 +1,38 @@
+name: md-ops
+
+services:
+  md-ops:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: ${MD_OPS_IMAGE:-md-ops:0.1.0}
+    init: true
+    restart: unless-stopped
+    user: "${MD_OPS_UID:-1000}:${MD_OPS_GID:-1000}"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 3098
+      MD_OPS_ALLOW_MUTATIONS: ${MD_OPS_ALLOW_MUTATIONS:-false}
+      MD_OPS_TRUSTED_HOSTS: ${MD_OPS_TRUSTED_HOSTS:-localhost,127.0.0.1,::1}
+      MD_OPS_ROOTS: >-
+        [{"id":"${MD_OPS_ROOT_ID:-demo}","label":"${MD_OPS_ROOT_LABEL:-Demo vault}","path":"/vaults/main","home":"${MD_OPS_ROOT_HOME:-Welcome.md}"}]
+    ports:
+      - "${MD_OPS_BIND_ADDRESS:-127.0.0.1}:${MD_OPS_PORT:-3098}:3098"
+    volumes:
+      - type: bind
+        source: ${MD_OPS_VAULT_PATH:-./packages/api/example-vault}
+        target: /vaults/main
+        read_only: ${MD_OPS_VAULT_READ_ONLY:-true}
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,nodev,size=64m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "bun", "-e", "const u='http://127.0.0.1:'+process.env.PORT+'/readyz';const r=await fetch(u);if(!r.ok)process.exit(1)"]
+      interval: 10s
+      timeout: 3s
+      start_period: 10s
+      retries: 5

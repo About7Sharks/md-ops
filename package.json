@@ -1,0 +1,40 @@
+{
+  "name": "md-ops",
+  "private": true,
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "A local-first Markdown operations workspace with a browser UI, API, and MCP server.",
+  "homepage": "https://mdops.z4cllc.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/About7Sharks/md-ops.git"
+  },
+  "bugs": {
+    "url": "https://github.com/About7Sharks/md-ops/security/advisories/new"
+  },
+  "workspaces": [
+    "packages/ui",
+    "packages/mcp"
+  ],
+  "scripts": {
+    "setup": "npm ci && npm run setup:api && npm --prefix site ci",
+    "setup:ci": "npm ci && npm run setup:api && npm --prefix site ci",
+    "setup:api": "./scripts/with-bun.sh bun install --cwd packages/api --frozen-lockfile",
+    "build": "npm run build:api && npm run build:ui && npm run build:mcp",
+    "build:api": "npm --prefix packages/api run build",
+    "build:ui": "npm --prefix packages/ui run build",
+    "build:mcp": "npm --prefix packages/mcp run build",
+    "test": "npm run test:api && npm run test:ui && npm run test:mcp && npm run test:operations",
+    "test:api": "npm --prefix packages/api test",
+    "test:ui": "npm --prefix packages/ui test",
+    "test:mcp": "npm --prefix packages/mcp test",
+    "test:operations": "./scripts/test-operations.sh",
+    "typecheck": "npm run build:api",
+    "lock:ui:update": "npm --prefix packages/ui install --package-lock-only --ignore-scripts --workspaces=false",
+    "lock:ui:check": "./scripts/verify-ui-lockfile.sh",
+    "verify:browser": "npm --prefix packages/ui run verify:mobile --",
+    "verify:browser:local": "./scripts/verify-local-browser.sh",
+    "verify:container": "bash scripts/verify-container.sh",
+    "verify": "npm run test:operations && ./scripts/prepare-ui-bundle.sh && npm run test:api && npm run build:api && npm run test:ui && npm run test:mcp && npm run build:mcp && npm --prefix site run build"
+  }
+}
