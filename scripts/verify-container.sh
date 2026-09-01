@@ -117,6 +117,9 @@ compose "$readonly_project" 0 "$repo_root/packages/api/example-vault" true false
 echo "[container] verify explicit writable mode against a temporary vault"
 mkdir -p "$temporary_directory/vault"
 cp -a "$repo_root/packages/api/example-vault/." "$temporary_directory/vault/"
+# The synthetic fixture must be accessible when the host runner UID differs
+# from the fixed non-root container UID. Real vault permissions are unchanged.
+chmod -R a+rwX "$temporary_directory/vault"
 compose "$writable_project" 0 "$temporary_directory/vault" false true up -d --no-build
 writable_address="$(compose "$writable_project" 0 "$temporary_directory/vault" false true port md-ops 3098)"
 writable_url="http://${writable_address}"

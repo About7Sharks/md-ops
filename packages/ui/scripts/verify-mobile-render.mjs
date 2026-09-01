@@ -175,7 +175,7 @@ class CdpConnection {
   }
 }
 
-async function waitForFile(path, processHandle, timeoutMs = 10_000) {
+async function waitForFile(path, processHandle, timeoutMs = 30_000) {
   const deadline = Date.now() + timeoutMs
   while (Date.now() < deadline) {
     try {
@@ -193,6 +193,8 @@ async function launchChrome(options, profileDir, viewport) {
   const chrome = spawn(options.chrome, [
     '--headless=new',
     '--disable-gpu',
+    '--disable-dev-shm-usage',
+    '--no-sandbox',
     '--no-first-run',
     '--no-default-browser-check',
     '--hide-scrollbars',
