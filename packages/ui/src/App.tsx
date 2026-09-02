@@ -24,6 +24,7 @@ import type { CreateNoteSubmission } from './CreateNoteDialog'
 import RichMarkdownEditor from './RichMarkdownEditor'
 import UnsavedChangesDialog from './UnsavedChangesDialog'
 import { extractMermaidBlocks } from './mermaidDiagrams'
+import { mermaidExportFilename } from './mermaidExport'
 import DiagramsPanel from './DiagramsPanel'
 import ThemePicker from './ThemePicker'
 import { applyUiSettings, loadUiSettings, saveUiSettings } from './themeModel'
@@ -210,12 +211,17 @@ const MarkdownDocument = memo(function MarkdownDocument({ markdown, fileList, ac
           }
           return <img src={src} alt={alt ?? ''} loading="lazy" {...props} />
         },
-        code: ({ className, children, ...props }) => {
+        code: ({ className, children, node, ...props }) => {
           if (className?.includes('language-mermaid')) {
             const source = String(children ?? '').replace(/\n$/, '')
+            const sourceLine = node?.position?.start.line
             return (
               <Suspense fallback={<div className="mermaid-diagram" data-role="mermaid-diagram-loading" />}>
-                <MermaidDiagram source={source} />
+                <MermaidDiagram
+                  source={source}
+                  downloadName={mermaidExportFilename(selectedRelPath, sourceLine)}
+                  exportLabel={sourceLine ? `Mermaid diagram at line ${sourceLine}` : 'Mermaid diagram'}
+                />
               </Suspense>
             )
           }
@@ -1730,7 +1736,11 @@ export default function App() {
                             <span className="diagram-block-line">line {block.startLine}</span>
                           </div>
                           <Suspense fallback={<div className="mermaid-diagram" data-role="mermaid-diagram-loading" />}>
-                            <MermaidDiagram source={block.source} />
+                            <MermaidDiagram
+                              source={block.source}
+                              downloadName={mermaidExportFilename(selectedRelPath, block.startLine)}
+                              exportLabel={`Diagram ${index + 1} at line ${block.startLine}`}
+                            />
                           </Suspense>
                         </div>
                       ))

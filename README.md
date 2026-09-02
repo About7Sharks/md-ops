@@ -10,7 +10,7 @@ The current source tree is kept portable. It excludes user vaults, screenshots, 
 
 ## What is included
 
-- `packages/ui` — React/Vite user interface for file browsing, Markdown preview, graphing, and guarded edits.
+- `packages/ui` — React/Vite user interface for file browsing, Markdown preview, graphing, per-diagram Mermaid PNG export, and guarded edits.
 - `packages/api` — Bun HTTP API. It exposes only logical root IDs and relative paths.
 - `packages/mcp` — stdio Model Context Protocol server that uses the HTTP API. It starts read-only.
 - `skills/` — portable agent instructions for HTTP and MCP operation.
