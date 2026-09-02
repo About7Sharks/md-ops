@@ -20,9 +20,11 @@ describe('DiagramsPanel contracts', () => {
     expect(panel).toContain('diagram-file-blocks')
   })
 
-  it('renders mermaid blocks inline in the note preview via a code component', () => {
+  it('renders mermaid blocks inline in the note preview with a distinct PNG export name', () => {
     expect(app).toContain("className?.includes('language-mermaid')")
-    expect(app).toContain('<MermaidDiagram source={source} />')
+    expect(app).toContain('<MermaidDiagram')
+    expect(app).toContain('downloadName={mermaidExportFilename(selectedRelPath, sourceLine)}')
+    expect(app).toContain('exportLabel={`Diagram ${index + 1} at line ${block.startLine}`}')
   })
 
   it('extracts the same blocks the diagrams view uses', () => {

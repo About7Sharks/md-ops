@@ -2306,6 +2306,50 @@ textarea {
   height: auto;
 }
 
+.mermaid-diagram-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-height: 36px;
+  margin-top: 8px;
+}
+
+.mermaid-export-button {
+  min-height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--line-strong);
+  border-radius: 7px;
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.mermaid-export-button:hover:not(:disabled),
+.mermaid-export-button:focus-visible {
+  border-color: var(--blue);
+  color: var(--text-strong);
+}
+
+.mermaid-export-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.mermaid-export-status,
+.mermaid-export-error {
+  color: var(--muted-strong);
+  font-size: 12px;
+}
+
+.mermaid-export-error {
+  margin-top: 6px;
+  color: #ffb3b3;
+}
+
 .mermaid-diagram-loading {
   color: var(--muted-strong);
   font-size: 13px;
@@ -3127,6 +3171,7 @@ textarea {
 
 @media (max-width: 900px) {
   .rich-editor-pane { padding: 8px; }
+  .mermaid-export-button { min-height: 44px; }
 }
 
 @media (max-width: 520px) {
