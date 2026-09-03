@@ -1206,7 +1206,7 @@ a:focus-visible {
 .landing-hero {
   position: relative;
   overflow: clip;
-  padding: 112px 0 104px;
+  padding: 56px 0 104px;
 }
 
 .landing-grid {
@@ -2228,7 +2228,7 @@ a:focus-visible {
   }
 
   .landing-hero {
-    padding: 72px 0 78px;
+    padding: 36px 0 78px;
   }
 
   .landing-hero-inner {
